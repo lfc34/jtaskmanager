@@ -11,8 +11,7 @@ public class CliTaskManager {
                 \t-c "Task Name" "HH:mm dd/mm/yyyy" - create a task
                 \t-d taskId - delete a task with given ID
                 \t-l - list all tasks
-                \t-m taskID - modify a task with given ID
-                """);
+                \t-m taskID - modify a task with given ID""");
 	}
 	
 	public static void createTask(String name, String deadline) {

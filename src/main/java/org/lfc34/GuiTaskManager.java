@@ -2,6 +2,6 @@ package org.lfc34;
 
 public class GuiTaskManager {
 	public static void init() {
-		System.out.println("Will be implemented soon");
+		System.out.println("GUI will be implemented soon. Use -h");
 	}
 }

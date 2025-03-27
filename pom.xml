@@ -74,6 +74,7 @@
                     <configuration>
                         <archive>
                         <manifest>
+                            <addClasspath>true</addClasspath>
                             <mainClass>org.lfc34.Main</mainClass>
                         </manifest>
                         </archive>
