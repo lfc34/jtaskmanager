@@ -8,9 +8,9 @@ public class Main {
         	GuiTaskManager.init();
         	return;
         } 
+		      
+		// IF USER SKIPPED GUI THERE GOES CLI
         switch (args.length) {
-            // PRINT HELP - WORKS
-            // LIST TASKS - WORKS
 		case 1:
         	if (args[0].equalsIgnoreCase("-h")) {
         		CliTaskManager.printHelp();
@@ -20,8 +20,6 @@ public class Main {
         		System.err.println("Invalid arguments. Try -h");
         	}
         	break;
-		// TASK DELETION - WORKS
-		// TASK MODIFY - BUGGY AS HELL
         case 2:
         	if (args[0].equalsIgnoreCase("-d")) {
         		CliTaskManager.deleteTask(Integer.parseInt(args[1]));
@@ -31,8 +29,6 @@ public class Main {
 				System.err.println("Invalid arguments. Try -h");
 			}
         	break;
-
-		// TASK CREATION - WORKS
         case 3:
 			if (args[0].equalsIgnoreCase("-c")) {
 				CliTaskManager.createTask(args[1], args[2]);

@@ -32,6 +32,7 @@ public class CliTaskManager {
 		}
 	}
 
+	// TODO: parse tasks here if TaskDB.listTasks() will return array of Task
 	public static void listTasks() {
 		String[] tasks = TaskDB.listTasks();
         assert tasks != null;
