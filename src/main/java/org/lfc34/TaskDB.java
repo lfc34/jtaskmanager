@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /* Current functionality:
 *  1. Create DB and a table inside it
@@ -78,6 +80,7 @@ public class TaskDB {
         }
     }
 
+    // TODO: make it return array of tasks. Front-end will parse it as needed
     public static String[] listTasks() {
         reIndexDb();
         final String sqlStatement = "SELECT * FROM TASKS;";
@@ -85,19 +88,14 @@ public class TaskDB {
             Connection conn = DriverManager.getConnection(urlPathCrossplatform.toString());
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(sqlStatement);
-
-            String[] tasks = new String[50];
-            int taskCounter = 0;
+            List<String> tasksList = new ArrayList<>();
             while (rs.next()) {
-                if (taskCounter > 49) {
-                    break; // !!!!
-                }
-                tasks[taskCounter] = rs.getInt("id") + " | "
+                tasksList.add(rs.getInt("id") + " | "
                         + rs.getString("task_name") + " | "
                         + rs.getString("deadline") + " | "
-                        + rs.getString("state");
-                ++taskCounter;
+                        + rs.getString("state"));
             }
+            String[] tasks = tasksList.toArray(new String[0]);
             return tasks;
         } catch (SQLException e) {
             System.err.println("Error " + e.getErrorCode());
