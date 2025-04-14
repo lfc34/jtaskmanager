@@ -3,12 +3,18 @@ package org.lfc34;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.time.LocalDateTime;
+
 import javax.swing.*;
+import javax.swing.border.Border;
+
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 public class GuiTaskManager {
 	private static final Dimension minWinSize = new Dimension(600, 600);
 	private static final Dimension maxWinSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private static final Dimension addFrameSize = new Dimension(500, 150);
+	private static final Dimension addFrameSize = new Dimension(500, 100);
 	private static int selectedTask = -1;
 
 	// TODO: implement all elements here as static, and configure them via methods
@@ -44,8 +50,6 @@ public class GuiTaskManager {
 
 		// Set up button functionality
 		addButton.addActionListener(new ActionListener() {
-			
-			// TODO: add functionality to this SHIT
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Add button clicked");
@@ -76,6 +80,30 @@ public class GuiTaskManager {
 				// showtime
 				addFrame.add(fieldPanel);
 				addFrame.add(btnPanel, BorderLayout.EAST);
+
+				// Button functionality
+				confirm.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO: add date validation here!
+						Task task = new Task(taskNameField.getText(), LocalDateTime.parse(deadlineField.getText(), Task.deadLineFormat));
+						TaskDB.addTask(task);
+						addFrame.setVisible(false);
+						addFrame.dispose();
+					}
+				});
+				cancel.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						addFrame.setVisible(false);
+						addFrame.dispose();
+					}
+				});
+				// addFrame.dispatchEvent(new WindowEvent(addFrame, WindowEvent.WINDOW_CLOSING));
+				// if (confirm.getModel().isPressed() || cancel.getModel().isPressed()) {
+				// 	addFrame.setVisible(false);
+				// 	addFrame.dispose();
+				// }
 			}
 		});		
 
@@ -105,6 +133,7 @@ public class GuiTaskManager {
 				
 				// window
 				JDialog confirm = new JDialog(w);
+				confirm.setLayout(new BorderLayout());
 				confirm.setSize(300, 150);
 				confirm.setLocationRelativeTo(null);
 				confirm.setTitle("Confirm action");
@@ -113,9 +142,13 @@ public class GuiTaskManager {
 				JLabel label = new JLabel("Are you sure you want to delete this task?");
 
 				// buttons
-				JButton confim = new JButton("Yes");
-				JButton cancel = new JButton("No");
+				JButton yBtn = new JButton("Yes");
+				JButton nBtn = new JButton("No");
 				// TODO: complete it
+				confirm.add(label, BorderLayout.PAGE_START);
+				confirm.add(yBtn, BorderLayout.WEST);
+				confirm.add(nBtn, BorderLayout.EAST);
+				confirm.pack();
 			}
 		});
 
