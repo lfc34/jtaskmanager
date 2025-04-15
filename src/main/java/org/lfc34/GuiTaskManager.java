@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Calendar;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -47,6 +49,25 @@ public class GuiTaskManager {
 		buttonPanel.add(addButton);
 		buttonPanel.add(delButton);
 		buttonPanel.add(modButton);
+		
+		// TASK LIST CREATION AND SETUP
+		String[] tasks = fetchTasksList();
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		// JList<String> tasksList = new JList<>(fetchTasksList());
+		JList<String> tasksList = new JList<>(listModel);
+
+		// update list
+		listModel.clear();
+		for (String t : tasks) {
+			listModel.addElement(t);
+		}
+
+		JScrollPane tasksPanel = new JScrollPane(tasksList);
+		tasksPanel.setViewportView(tasksList);
+		tasksPanel.setHorizontalScrollBar(tasksPanel.createHorizontalScrollBar());
+		tasksPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		tasksPanel.setVerticalScrollBar(tasksPanel.createVerticalScrollBar());
+		tasksPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		// Set up button functionality
 		addButton.addActionListener(new ActionListener() {
@@ -63,7 +84,7 @@ public class GuiTaskManager {
 				
 				// Fields
 				JTextField taskNameField = new JTextField("enter task name", 24);
-				JTextField deadlineField = new JTextField("enter deadline", 24);
+				JTextField deadlineField = new JTextField("13:30 01/01/2025", 24);
 
 				// buttons
 				JButton confirm = new JButton("Add task");
@@ -88,6 +109,13 @@ public class GuiTaskManager {
 						// TODO: add date validation here!
 						Task task = new Task(taskNameField.getText(), LocalDateTime.parse(deadlineField.getText(), Task.deadLineFormat));
 						TaskDB.addTask(task);
+						String[] tasks = fetchTasksList();
+						listModel.clear();
+						for (String t : tasks) {
+							listModel.addElement(t);
+						}
+						tasksList.revalidate();
+						tasksList.repaint();
 						addFrame.setVisible(false);
 						addFrame.dispose();
 					}
@@ -115,14 +143,6 @@ public class GuiTaskManager {
 			}
 		});
 		
-		// TASK LIST CREATION AND SETUP
-		JList<String> tasksList = new JList<>(fetchTasksList());
-		JScrollPane tasksPanel = new JScrollPane(tasksList);
-		tasksPanel.setViewportView(tasksList);
-		tasksPanel.setHorizontalScrollBar(tasksPanel.createHorizontalScrollBar());
-		tasksPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		tasksPanel.setVerticalScrollBar(tasksPanel.createVerticalScrollBar());
-		tasksPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		
 		// del button here because it needs tasksList
 		delButton.addActionListener(new ActionListener() {
