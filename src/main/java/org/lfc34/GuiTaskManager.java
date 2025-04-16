@@ -139,16 +139,68 @@ public class GuiTaskManager {
 		modButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Mod button clicked");
+				selectedTask = tasksList.getSelectedIndex() + 1;
+				Task currentTask = TaskDB.getTask(selectedTask);
+				JFrame modFrame = new JFrame("Modify task");
+				modFrame.setLayout(new BorderLayout());
+				modFrame.setSize(500, 150);	
+				modFrame.setLocationRelativeTo(null);
+				modFrame.setVisible(true);
+
+				// Fields
+				JTextField taskNameField = new JTextField(currentTask.getName(), 24);
+				JTextField deadlineField = new JTextField(currentTask.getBeautifulDeadline(), 24);
+				String[] states = {"DONE", "UNDONE", "IN_PROCESS"};
+				JComboBox taskState = new JComboBox(states);
+
+				// buttons
+				JButton modBtn = new JButton("Modify task");
+				JButton cancel = new JButton("Cancel");
+
+				// Panels which contain all of the stuff above 
+				JPanel fieldPanel = new JPanel();
+				fieldPanel.add(taskNameField);
+				fieldPanel.add(deadlineField);
+				fieldPanel.add(taskState);
+				JPanel btnPanel = new JPanel();
+				btnPanel.add(modBtn);
+				btnPanel.add(cancel);
+
+				// showtime
+				modFrame.add(fieldPanel);
+				modFrame.add(btnPanel, BorderLayout.EAST);
+				modBtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						currentTask.setName(taskNameField.getText());
+						currentTask.setDeadline(LocalDateTime.parse(deadlineField.getText(), Task.deadLineFormat));
+						currentTask.setState(Task.parseState(taskState.getSelectedItem().toString()));
+						TaskDB.modifyTask(selectedTask, currentTask);
+						String[] tasks = fetchTasksList();
+						listModel.clear();
+						for (String t : tasks) {
+							listModel.addElement(t);
+						}
+						tasksList.revalidate();
+						tasksList.repaint();
+						modFrame.setVisible(false);
+						modFrame.dispose();
+					}
+				});
+				cancel.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						modFrame.setVisible(false);
+						modFrame.dispose();
+					}
+				});
 			}
 		});
 		
-		
-		// del button here because it needs tasksList
 		delButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Delete button clicked");
+				// this is voodoo xd
 				selectedTask = tasksList.getSelectedIndex() + 1;
 				
 				// window
@@ -164,11 +216,33 @@ public class GuiTaskManager {
 				// buttons
 				JButton yBtn = new JButton("Yes");
 				JButton nBtn = new JButton("No");
-				// TODO: complete it
+
 				confirm.add(label, BorderLayout.PAGE_START);
 				confirm.add(yBtn, BorderLayout.WEST);
 				confirm.add(nBtn, BorderLayout.EAST);
 				confirm.pack();
+				yBtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						TaskDB.delTask(selectedTask);
+						String[] tasks = fetchTasksList();
+						listModel.clear();
+						for (String t : tasks) {
+							listModel.addElement(t);
+						}
+						tasksList.revalidate();
+						tasksList.repaint();
+						confirm.setVisible(false);
+						confirm.dispose();
+					}
+				});	
+				nBtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						confirm.setVisible(false);
+						confirm.dispose();
+					}
+				});
 			}
 		});
 
