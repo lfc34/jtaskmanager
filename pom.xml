@@ -6,7 +6,7 @@
 
     <groupId>org.lfc34</groupId>
     <artifactId>TaskManager</artifactId>
-    <version>alpha</version>
+    <version>beta</version>
     <packaging>jar</packaging>
 
     <properties>
